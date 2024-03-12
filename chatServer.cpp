@@ -9,6 +9,10 @@
 #include <iostream>
 #include "chatServer.h"
 
+Client::~Client()
+{
+    close(fd);
+}
 void Client::setFd(int fd_)
 {
     fd = fd_;
@@ -32,6 +36,13 @@ ChatStat::ChatStat()
     numClients = 0;
     maxClient = -1;
     memset(clients, 0, sizeof(*clients));
+}
+ChatStat::~ChatStat()
+{
+    for (auto& client : clients) {
+        delete client;
+        client = nullptr;
+    }
 }
 void ChatStat::setServerSock(int serverSock_)
 {

@@ -7,6 +7,7 @@ class Client
 {
 public:
     Client() = default;
+    ~Client();
     void setFd(int fd_);
     int getFd();
     void setNick(const std::string& nick_);
