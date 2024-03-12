@@ -6,11 +6,15 @@
 class Client
 {
 public:
-    Client(int fd_, std::string unic_);
+    Client() = default;
+    void setFd(int fd_);
+    int getFd();
+    void setNick(const std::string& nick_);
+    const std::string& getNick();
 
 private:
     int fd;
-    std::string unic;
+    std::string nick;
 };
 
 class ChatStat
@@ -23,6 +27,10 @@ public:
     void setNumMaxClient(int maxClient_);
     int getNumMaxClient();
     Client** getClientsVec();
+    int acceptClient();
+    void freeClient();
+    Client* createClient(int fd);
+    int socketSetNonBlockNoDelay(int fd);
 
 private:
     int serverSock;
