@@ -1,54 +1,48 @@
 #include <string>
+#include <vector>
 
 #define MAX_CLIENTS 1000
 #define SERVER_PORT 7711
 
-class Client
-{
-public:
-    Client() = default;
-    ~Client();
-    void setFd(int fd_);
-    int getFd();
-    void setNick(const std::string& nick_);
-    const std::string& getNick();
+class Client final {
+    public:
+        Client() = default;
+        ~Client();;
+        Client(const Client& cl) = delete;
+        Client(Client&& cl) = delete;
 
-private:
-    int fd;
-    std::string nick;
+        void setFd(int fd);
+        int getFd() const;
+        void setNick(const std::string& nick);
+        const std::string& getNick() const;
+
+    private:
+        int             _fd;
+        std::string     _nick;
 };
 
-class ChatStat
-{
-public:
-    ChatStat();
-    ~ChatStat();
-    void setServerSock(int serverSock_);
-    int getServerSock();
-    void setNumMaxClient(int maxClient_);
-    int getNumMaxClient();
-    Client** getClientsVec();
-    int acceptClient();
-    void freeClient();
-    Client* createClient(int fd);
-    int socketSetNonBlockNoDelay(int fd);
 
-private:
-    int serverSock;
-    int numClients;
-    int maxClient;
-    Client* clients[MAX_CLIENTS];
-};
+class ChatServer final {
+    public:
+        ~ChatServer();
 
-class ChatServer
-{
-public:
-    ChatServer();
-    ~ChatServer();
-    void init();
-    void start();
-    void coreFunc();
+        static ChatServer& getInstance();
+        bool start();    
+        
+    private:
+        ChatServer();
+        ChatServer(const ChatServer& cs) = delete;
+        ChatServer(ChatServer&& cs) = delete;
+        ChatServer& operator = (const ChatServer& cs) = delete;
 
-private:
-    ChatStat* chat;
+        bool init();
+        int acceptClient();
+        void sendWelcomeToClient();
+        int socketSetNonBlockNoDelay(int fd);
+
+    private:
+        int                     _serverSock;
+        int                     _numClients;
+        int                     _maxClient;
+        std::vector<Client*>    _clientVec;
 };

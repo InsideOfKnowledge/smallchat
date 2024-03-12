@@ -3,11 +3,8 @@
 
 int main()
 {
-    ChatServer chatServer;
-
-    chatServer.init();
-
-    chatServer.start();
+    if (!ChatServer::getInstance().start())
+        return -1;
 
     return 0;
 }
